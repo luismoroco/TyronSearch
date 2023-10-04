@@ -80,21 +80,21 @@ def recursive_extraction_info(start_url, depth):
 
         with open(f'outputs/output_{id_page}', 'a', encoding='utf-8') as file:
             if os.path.getsize(f'outputs/output_{id_page}') == 0:
-                file.write('[')
+                file.write('')
             else:
-                file.write(',')
+                file.write('\n')
 
             for i, json_object in enumerate(json_objects):
                 json.dump(json_object, file, ensure_ascii=False, indent=4)
-                if i < len(json_objects) - 1:
-                    file.write(',') 
+                # if i < len(json_objects) - 1:
+                #     file.write(',') 
                 
         cont_per_page = cont_per_page - 1
 
     elif(cont_per_page == 0):
         cont_per_page = 20
-        with open(f'outputs/output_{id_page}', 'a', encoding='utf-8') as file:
-            file.write(']')
+        # with open(f'outputs/output_{id_page}', 'a', encoding='utf-8') as file:
+        #     file.write(']')
         id_page = id_page+1
 
     return [page_info] + sub_links
