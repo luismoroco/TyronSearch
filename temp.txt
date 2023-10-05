@@ -1,0 +1,1 @@
+hadoop jar --classpath /app/jar/java-json.jar ./app/jar/InvertedIndex.jar   InvertedIndex  /user/root/input/ /user/root/output_inv 
