@@ -1,0 +1,7 @@
+crawling/venv
+crawling/outputs
+
+*.json
+
+hadoop/data/
+hadoop/volume/
