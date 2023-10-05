@@ -10,6 +10,10 @@ UNIQUE_ID = '1001'
 
 def get_wikipedia_info(url, max_words=150):
     global UNIQUE_ID
+    if url in visited_urls:
+        return None  # Skip already visited URLs
+    visited_urls.add(url)  # Mark the URL as visited
+
     response = requests.get(url)
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -50,11 +54,9 @@ def load_visited_urls():
 load_visited_urls()
 
 #####SEED
-start_url = 'https://en.wikipedia.org/wiki/Materia'
+start_url = 'https://en.wikipedia.org/wiki/Computer_science'
 
-
-max_depth = 3 #profunidad 
-
+max_depth = 4 #profundidad
 
 id_page = 0
 cont_per_page = 20
@@ -64,19 +66,20 @@ def recursive_extraction_info(start_url, depth):
     if depth <= 0:
         return []
 
-    page_info, full_links = get_wikipedia_info(start_url)
-    if page_info is None:
+    page_info_and_links = get_wikipedia_info(start_url)
+    if page_info_and_links is None:
         return []
+
+    page_info, full_links = page_info_and_links  # Unpack page_info and full_links
 
     sub_links = []
 
     for link in full_links:
         sub_links.extend(recursive_extraction_info(link, depth - 1))
     
-    if(cont_per_page>0):
+    if(cont_per_page > 0):
         json_objects = []
         json_objects.append(page_info)
-        
 
         with open(f'outputs/output_{id_page}', 'a', encoding='utf-8') as file:
             if os.path.getsize(f'outputs/output_{id_page}') == 0:
@@ -86,20 +89,14 @@ def recursive_extraction_info(start_url, depth):
 
             for i, json_object in enumerate(json_objects):
                 json.dump(json_object, file, ensure_ascii=False, indent=4)
-                # if i < len(json_objects) - 1:
-                #     file.write(',') 
-                
         cont_per_page = cont_per_page - 1
 
     elif(cont_per_page == 0):
         cont_per_page = 20
-        # with open(f'outputs/output_{id_page}', 'a', encoding='utf-8') as file:
-        #     file.write(']')
-        id_page = id_page+1
+        id_page = id_page + 1
 
     return [page_info] + sub_links
 
 result = recursive_extraction_info(start_url, max_depth)
 
-# print('Lo logro senior, Lo logre? Lo logro')
 print('Finish successfully')
