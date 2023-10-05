@@ -1,7 +1,6 @@
 crawling/venv
 crawling/outputs
 
-*.txt
 *.json
 
 hadoop/data/
